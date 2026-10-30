@@ -4,6 +4,7 @@ import kz.aitu.visitor.element.Directory;
 import kz.aitu.visitor.element.File;
 import kz.aitu.visitor.visitor.SearchVisitor;
 import kz.aitu.visitor.visitor.SizeCalculatorVisitor;
+import kz.aitu.visitor.visitor.TreePrinterVisitor;
 
 public class Main {
 
@@ -25,11 +26,18 @@ public class Main {
                 .add(images)
                 .add(new File("README.md", 3 * KILOBYTE));
 
+        printTree(project);
         printTotalSize(project);
         printTotalSize(documents);
         printSearchResult(project, "*.java files", new SearchVisitor(file -> file.getExtension().equals("java")));
         printSearchResult(project, "files larger than 100 KB",
                 new SearchVisitor(file -> file.getSizeBytes() > LARGE_FILE_BYTES));
+    }
+
+    private static void printTree(Directory directory) {
+        TreePrinterVisitor treePrinter = new TreePrinterVisitor();
+        directory.accept(treePrinter);
+        System.out.println(treePrinter.getTree());
     }
 
     private static void printTotalSize(Directory directory) {
